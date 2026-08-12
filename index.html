@@ -7,7 +7,7 @@
     <!-- استدعاء مكتبة الأيقونات الرسمية لعرض علامات الصح والترس واليد بدقة -->
     <link rel="stylesheet" href="https://cloudflare.com">    
     <!-- 🚀 إضافة كود مكتبة عارض الـ PDF هنا دون تغيير بقية الإعدادات -->
-   <script src="https://apryse.com"></script>
+  <script src="lib/webviewer.min.js"></script>
     
     <style>
         * {
@@ -488,11 +488,11 @@
       // كود ذكي لتضمين وعرض ملف الـ PDF مباشرة داخل المربع المخصص بموقعك
 // كود تشغيل أداة العرض الاحترافية الأصلية بالكامل برابط مباشر مستقر
 WebViewer({
-    path: 'https://apryse.com',
+    path: 'lib',
     initialDoc: 'certificate.pdf'
 }, document.getElementById('viewer'))
 .then(instance => {
-    console.log("PDF Viewer is fully loaded and active.");
+    console.log("PDF Viewer is Ready!");
 });
     </script>
 </body>
