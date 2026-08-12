@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Verify+ Document Verification</title>
+    <!-- استدعاء مكتبة الأيقونات الرسمية لعرض علامات الصح والترس واليد بدقة -->
+    <link rel="stylesheet" href="https://cloudflare.com">    
+    <!-- 🚀 إضافة كود مكتبة عارض الـ PDF هنا دون تغيير بقية الإعدادات -->
+    <script src="lib/webviewer.min.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            /* الخلفية الزرقاء المكررة للكمبيوتر */
+            background-image: url('bg.jpg');
+            background-repeat: repeat;
+            background-position: top center;
+            background-color: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        .verification-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 850px;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+       .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+
+        .card-header img {
+            max-height: 115px;
+            object-fit: contain;
+        }
+
+        /* حاوية أداة العرض الذكية المخصصة بالكامل لمطابقة صورتك */
+       .document-viewer {
+    position: relative;
+    width: 100%;
+    border: none !important; /* 🚀 إزالة الإطار الرمادي الخارجي المشترك */
+    border-radius: 0px !important;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+
+       .valid-banner {
+    width: 100%;
+    background-color: #dcf5f2 !important; /* 🚀 درجة الخلفية الفيروزية الفاتحة للأصلي */
+    color: #00777a !important; /* 🚀 لون النص الفيروزي الداكن للأصلي */
+    border: none !important; /* الأصلي ليس له إطار خارجي */
+    border-radius: 8px !important;
+    padding: 10px 12px !important; /* زيادة المساحة الداخلية ليعطي نفس اتساع الأصلي */
+    font-size: 12px !important; /* 🚀 تكبير حجم الخط ليتطابق مع الأصلي تماماً */
+    font-weight: 525 !important; /* جعل الخط سميك */
+    line-height: 1.4 !important; /* ضبط تباعد الأسطر المريح */
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+/* ضبط لون علامة الصح الفيروزية الكبيرة */
+.valid-banner i {
+    font-size: 12px !important;
+    color: #00777a !important;
+    margin-top: 3px;
+}
+
+/* ضبط الكلمات العريضة بنفس الدرجة */
+.valid-banner strong {
+    color: #00777a !important;
+    font-weight: 700 !important;
+}
+
+
+        .valid-banner strong {
+            color: #000000;
+        }
+        /* 🚀 شريط أدوات التحكم الأبيض بالكامل والمطابق لصورتك المظبوطة */
+        .viewer-toolbar {
+            background-color: #ffffff; /* تم تحويله للون الأبيض النظيف بالكامل */
+            border-bottom: 1px solid #dfe1e5;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        .viewer-toolbar i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .viewer-toolbar i:hover {
+            color: #2b5ce6;
+        }
+
+        /* حاوية عرض الشهادة النظيفة جداً باللون الرمادي الفاتح والنقي */
+        .document-content {
+            width: 100%;
+            height: 480px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            justify-content: center;
+           padding: 0px !important;
+             margin-top: 15px !important;
+             border: 1px solid #dfe1e5 !important;
+             border-radius: 4px !important;
+
+        }
+
+        /* 🚀 وسم حاوية العارض لتشغيل الـ PDF بداخلها مباشرة بدلاً من الصورة الثابتة */
+        #viewer {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* النصوص والأزرار التفاعلية أسفل الوثيقة */
+        .reference-text {
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .actions-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        /* الأزرار الرئيسية المتطابقة */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            width: auto;
+            min-width: 240px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-blue, .btn-connect {
+            background-color: #2b5ce6;
+            color: white;
+        }
+.btn-connect {
+    min-width: 190px !important; /* 🚀 تصغير العرض على الكمبيوتر ليكون أصغر من الفوقاني بحاجة بسيطة */
+}
+
+        /* لوحة تفاصيل البيانات الديناميكية */
+        .details-panel {
+            display: none;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        /* جدول البيانات المتجاوب */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 10px 8px;
+            color: #111;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f7f7f7;
+            color: #333;
+        }
+
+        .data-table td.highlight-green {
+            color: #0b6941;
+            font-weight: 500;
+        }
+
+        .status-check {
+            color: #1aa053;
+            font-size: 15px;
+        }
+
+        /* شريط التأكيد المطابق للنظام داخل لوحة البيانات */
+        .match-banner {
+            background-color: #e1f7ec;
+            color: #0b6941;
+            padding: 12px 15px;
+            font-size: 13px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+.match-banner i {
+            color: #1aa053;
+        }
+
+        /* رابط إخفاء التفاصيل */
+        .hide-details-wrapper {
+            width: 100%;
+            text-align: right;
+            margin-bottom: 15px;
+        }
+
+        .hide-link {
+            color: #444ca2;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* الشريط السفلي الأسود العريض العابر للشاشة بالكامل */
+        .site-footer {
+            background-color: #0f111a;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #a0a5b5;
+            padding: 20px 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #ffffff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* قواعد مخصصة للموبايل والشاشات الصغيرة لمنع أي أخطاء وبتر الخلفية */
+        @media (max-width: 768px) {
+            body {
+                background-image: none !important;
+                background-color: #fcfcfc;
+            }
+
+            .main-content-wrapper {
+                padding: 10px 0px;
+            }
+
+        .verification-card {
+             box-shadow: none;
+             padding: 15px 5px !important;
+             border-radius: 4px !important;
+             margin: 10px auto !important;
+             width: 92% !important;
+            }
+
+
+                       /* 🚀 تشغيل وتكبير اللوجو الشمال (OTHM) لوحده */
+        img[src*="logo-left"] {
+            max-height: 110px !important;
+        }
+
+        /* 🚀 تشغيل وضبط اللوجو اليمين (Smart Verify+) لوحده */
+        img[src*="logo-right"] {
+            max-height: 80px !important;
+            align-self: flex-start !important; /* رفعه لأعلى سنة كما طلبنا سابقاً */
+        }
+
+            .card-header {
+              align-items: flex-start !important;
+            }
+            
+
+            .btn {
+                width: 100%;
+            }
+        .document-content {
+            height: 480px !important; 
+            padding: 0px !important; 
+            background-color: #ffffff !important; 
+        }
+
+        .site-footer {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+            padding: 20px 15px;
+        }
+
+        .footer-links {
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .actions-area {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            width: 100% !important;
+        }
+
+        .btn-blue {
+            width: 62% !important; 
+            background-color: #2b5ce6 !important;
+            color: white !important;
+            margin-bottom: 12px !important;
+        }
+
+               .btn-connect {
+            display: inline-flex !important;
+            width: 150px !important; /* المقاس الصغير المنكمش المطلوب */
+            min-width: 0px !important; /* 🚀 هذا السطر السحري سيلغي القيد القديم ويجبر الزر على التصغير فوراً */
+            background-color: #3b66de !important; 
+            color: white !important; 
+            margin-bottom: 5px !important;
+        }
+
+    }
+</style>
+
+    <div class="main-content-wrapper">
+        <div class="verification-card">
+            
+            <!-- الهيدر واللوجوهات الحقيقية للموقع -->
+            <div class="card-header">
+                <img src="logo-left.png" alt="OTHM Qualifications">
+                <img src="logo-right.png" alt="Smart Verify+">
+            </div>
+
+            <!-- أداة عرض الوثيقة المخصصة بالكامل بشكل قارئ الـ PDF النظيف -->
+            <div class="document-viewer">
+                              <div class="valid-banner">
+                    <!-- كود علامة الصح الذي أضفته بنجاح -->
+                    <svg xmlns="http://w3.org" viewBox="0 0 512 512" style="width: 14px; height: 14px; fill: none; stroke: #00777a; stroke-width: 40px; margin-top: 2px; flex-shrink: 0;"><path d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm115.1 166.4l-133 133c-6.2 6.2-16.4 6.2-22.6 0l-63-63c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0l51.7 51.7 121.7-121.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"/></svg>
+                    <!-- 🚀 هذا هو سطر النص المفقود، أضفه مباشرة أسفل الـ svg لتظهر الكتابة الفيروزية -->
+                    <span>This document is <strong>valid</strong> and was issued by <strong>OTHM</strong> to <strong>Ahmed Nasser Mohamed Ahmed Montasser</strong> on <strong>13/04/2026</strong></span>
+                </div>
+
+                <!-- عرض صورة الشهادة أو المستند الأصلي داخل المساحة البيضاء والنظيفة -->
+                <div class="document-content">
+                    <!-- 🚀 تم استبدال الوسم القديم بوسم تشغيل عارض الشهادة التفاعلي هنا بدقة متناهية -->
+                    <div id="viewer"></div>
+                </div>
+            </div>
+
+            <div class="reference-text">
+                Reference: 43089206-01-R3K1
+            </div>
+
+            <div class="actions-area">
+              <button id="verifyBtn" class="btn btn-blue" onclick="showVerificationDetails()">
+                <svg xmlns="http://w3.org" viewBox="0 0 512 512" style="width: 13px; height: 13px; fill: none; stroke: #ffffff; stroke-width: 50px; margin-right: 6px; flex-shrink: 0;"><path d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm115.1 166.4l-133 133c-6.2 6.2-16.4 6.2-22.6 0l-63-63c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0l51.7 51.7 121.7-121.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"/></svg>Verify this Certificate
+            </button>
+
+
+                <div id="detailsPanel" class="details-panel">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Details</th>
+                                <th>Verified</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Student Full Name</td>
+                                <td class="highlight-green">Ahmed Nasser Mohamed Ahmed Montasser</td>
+                                <td><i class="fa-regular fa-circle-check status-check"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Issuing Body</td>
+                                <td class="highlight-green">OTHM</td>
+                                <td><i class="fa-regular fa-circle-check status-check"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Date of Award</td>
+                                <td class="highlight-green">13/04/2026</td>
+                                <td><i class="fa-regular fa-circle-check status-check"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Qualification Title</td>
+                                <td class="highlight-green">OTHM Level 6 Diploma in Occupational Health and Safety</td>
+                                <td><i class="fa-regular fa-circle-check status-check"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="match-banner">
+                        <i class="fa-regular fa-circle-check"></i>
+                        <span>The details match the DC System, this document is <strong>verified</strong></span>
+                    </div>
+
+                    <div class="hide-details-wrapper">
+                        <a class="hide-link" onclick="hideVerificationDetails()">Hide Details</a>
+                    </div>
+                </div>
+
+                            <!-- تأكد من كتابة الكلاس btn-connect وإضافة كود الـ svg للسهم -->
+            <a href="https://dcwverify.othm.org.uk/Account/Login?ReturnUrl=%2Fconnections%3Freference%3D43089206-01-R3K1" target="_blank" class="btn btn-connect">
+                Connect me <svg xmlns="http://w3.org" viewBox="0 0 448 512" style="width: 11px; height: 11px; fill: #ffffff; margin-left: 6px; margin-top: 1px;"><path d="M432 320H400c-8.8 0-16 7.2-16 16v112H48V128h112c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16H32C14.3 64 0 78.3 0 96v384c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V336c0-8.8-7.2-16-16-16zm-61-190L233.4 267.5c-6.2 6.2-16.4 6.2-22.6 0l-22.6-22.6c-6.2-6.2-6.2-16.4 0-22.6L325.8 84.9l-61.7-1.4c-11.3-.2-19.8-10-18.3-21.3l2.2-16c1.2-8.7 8.6-15.1 17.4-14.7l158.4 7.2c9 .4 16.2 7.6 16.5 16.6l7.2 158.4c.4 8.8-6 16.2-14.7 17.4l-16 2.2c-11.3 1.5-21-7-21.3-18.3l-1.4-61.7z"/></svg>
+            </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div>2026 © Advanced Secure Technologies</div>
+        <div class="footer-links">
+            <a href="https://verification.othm.org.uk/Pages/Accessibility" target="_blank">Accessibility Statement <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 10px;"></i></a>
+            <a href="https://verification.othm.org.uk/Pages/Privacy">Privacy</a>
+            <a href="https://verification.othm.org.uk/Pages/Faq">FAQ</a>
+            <a href="https://verification.othm.org.uk/Pages/Terms">Terms</a>
+            <a href="https://verification.othm.org.uk/Pages/Support">Support</a>
+        </div>
+    </footer>
+
+    <script>
+        const verifyBtn = document.getElementById('verifyBtn');
+        const detailsPanel = document.getElementById('detailsPanel');
+
+        function showVerificationDetails() {
+            verifyBtn.style.display = 'none';
+            detailsPanel.style.display = 'block';
+        }
+
+        function hideVerificationDetails() {
+            detailsPanel.style.display = 'none';
+            verifyBtn.style.display = 'inline-flex';
+        }
+
+        // 🚀 كود تشغيل وتفعيل عارض الـ PDF الذكي دون لمس أي دوال أخرى بالمشروع
+        WebViewer({
+            path: 'lib', // مسار مجلد المكتبة المباشر الذي وضعته بجانب الـ index.html
+            initialDoc: 'certificate.pdf' // اسم ملف الشهادة الحقيقي داخل مشروعك
+        }, document.getElementById('viewer'))
+        .then(instance => {
+            console.log("PDF Viewer is fully loaded and active.");
+        });
+    </script>
+</body>
+</html>
