@@ -518,6 +518,7 @@
             detailsPanel.style.display = 'none';
             verifyBtn.style.display = 'inline-flex';
         }
+        
 fetch('certificate.pdf')
   .then(res => res.blob())
   .then(blob => {
@@ -527,7 +528,7 @@ fetch('certificate.pdf')
         path: 'lib',
         initialDoc: fileObjectURL,
         extension: 'pdf',
-        licenseKey: '5jqmC56ocLt7nFPCnhsz8othm.thm' // 🚀 هذا هو المفتاح الكامل المربوط بموقعك كما ظهر في لوحة تحكمك
+        licenseKey: 'oEjyh6bOrMJUQE8XNJZ1' // 🚀 تم وضع مفتاحك الجديد هنا بنجاح
     }, document.getElementById('viewer'))
     .then(instance => {
         console.log("PDF Viewer is Ready!");
