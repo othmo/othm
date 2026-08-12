@@ -521,12 +521,14 @@
 
         WebViewer({
             path: 'lib',
-            // 🚀 الرابط ده بيفك حماية السيرفر وبيخلي الشهادة تفتح في الأداة فوراً
-            initialDoc: 'https://herokuapp.com'
+            initialDoc: fileObjectURL,
+            extension: 'pdf', // 🚀 حل الخطأ الأصفر وتحديد نوع الملف للأداة
+            licenseKey: '5jqmC560cL7nFPCnhsz8' // 🚀 ضع الكود النصي الطويل الذي نسخته من موقع الأداة هنا
         }, document.getElementById('viewer'))
             .then(instance => {
-                console.log("PDF Viewer Is Ready!");
+                console.log("PDF Viewer is Ready!");
             });
+
     </script>
     </body>
 
