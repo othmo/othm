@@ -518,8 +518,8 @@
             detailsPanel.style.display = 'none';
             verifyBtn.style.display = 'inline-flex';
         }
-        
-fetch('certificate.pdf')
+
+       fetch('certificate.pdf')
   .then(res => res.blob())
   .then(blob => {
     const fileObjectURL = URL.createObjectURL(blob);
@@ -527,8 +527,8 @@ fetch('certificate.pdf')
     WebViewer({
         path: 'lib',
         initialDoc: fileObjectURL,
-        extension: 'pdf',
-        licenseKey: 'oEjyh6bOrMJUQE8XNJZ1' // 🚀 تم وضع مفتاحك الجديد هنا بنجاح
+        extension: 'pdf', // 🚀 حل الخطأ الأصفر وتحديد نوع الملف للأداة
+        licenseKey: '5jqmC560cL7nFPCnhsz8' // 🚀 ضع الكود النصي الطويل الذي نسخته من موقع الأداة هنا
     }, document.getElementById('viewer'))
     .then(instance => {
         console.log("PDF Viewer is Ready!");
