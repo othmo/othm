@@ -521,9 +521,12 @@
 
         WebViewer({
             path: 'lib',
-            initialDoc: 'certificate.pdf' // المحلي مباشرة
+            // 🚀 الرابط ده بيفك حماية السيرفر وبيخلي الشهادة تفتح في الأداة فوراً
+            initialDoc: 'https://herokuapp.com'
         }, document.getElementById('viewer'))
-
+            .then(instance => {
+                console.log("PDF Viewer Is Ready!");
+            });
     </script>
     </body>
 
