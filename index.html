@@ -413,7 +413,7 @@
                     </svg>
                     <!-- 🚀 هذا هو سطر النص المفقود، أضفه مباشرة أسفل الـ svg لتظهر الكتابة الفيروزية -->
                     <span>This document is <strong>valid</strong> and was issued by <strong>OTHM</strong> to
-                        <strong>Ahmed Nasser Mohamed Ahmed Montasser</strong> on <strong>13/04/2026</strong></span>
+                        <strong>AHMED MOHAMED NAGUIB ABDEL AZIZ</strong> on <strong>13/04/2026</strong></span>
                 </div>
 
                 <!-- عرض صورة الشهادة أو المستند الأصلي داخل المساحة البيضاء والنظيفة -->
@@ -424,7 +424,7 @@
             </div>
 
             <div class="reference-text">
-                Reference: 43089206-01-R3K1
+                Reference: 28504011-80-A7k7
             </div>
 
             <div class="actions-area">
@@ -449,7 +449,7 @@
                         <tbody>
                             <tr>
                                 <td>Student Full Name</td>
-                                <td class="highlight-green">Ahmed Nasser Mohamed Ahmed Montasser</td>
+                                <td class="highlight-green">AHMED MOHAMED NAGUIB ABDEL AZIZ</td>
                                 <td><i class="fa-regular fa-circle-check status-check"></i></td>
                             </tr>
                             <tr>
@@ -518,23 +518,15 @@
             detailsPanel.style.display = 'none';
             verifyBtn.style.display = 'inline-flex';
         }
-
-       fetch('certificate.pdf')
-  .then(res => res.blob())
-  .then(blob => {
-    const fileObjectURL = URL.createObjectURL(blob);
-    
-    WebViewer({
-        path: 'lib',
-        initialDoc: fileObjectURL,
-        extension: 'pdf', // 🚀 حل الخطأ الأصفر وتحديد نوع الملف للأداة
-        licenseKey: '5jqmC560cL7nFPCnhsz8' // 🚀 ضع الكود النصي الطويل الذي نسخته من موقع الأداة هنا
-    }, document.getElementById('viewer'))
-    .then(instance => {
-        console.log("PDF Viewer is Ready!");
-    });
-  })
-  .catch(err => console.error("Error:", err));
+// تشغيل الأداة في وضع عرض الصور للحفاظ على الشريط العلوي وإلغاء اللوجو تماماً
+WebViewer({
+    path: 'lib',
+    initialDoc: 'preview.png', // 🚀 اسم صورة الشهادة الجديدة بجانب ملف الـ html
+    licenseKey: '5jqmC560cL7nFPCnhsz8' // مفتاحك الجديد المظبوط
+}, document.getElementById('viewer'))
+.then(instance => {
+    console.log("Viewer is Ready with images and no watermark!");
+});
 
     </script>
     </body>
